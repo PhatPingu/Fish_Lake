@@ -7,12 +7,19 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private Slider Slider_playerInput;
     [SerializeField] private Slider Slider_fishReelStatus;
+
+    [SerializeField] private GameObject WinningUI;
+    [SerializeField] private GameObject LoosingUI;
     
     [SerializeField] private float gameMoveSpeed;
     [SerializeField] private float playerMoveSpeed;
     [SerializeField] private float fishReelSpeed;
+    [SerializeField] private float looseBoundry;
     
     [SerializeField] private int moveDirection = 1;
+
+    [SerializeField] private bool fishingInProgress;
+    [SerializeField] private bool canRestartGame;
 
     void Start()
     {
@@ -22,14 +29,70 @@ public class GameManager : MonoBehaviour
 
     void FixedUpdate()
     {
+        Detect_StartFishing();
         MoveSliderAutomatically();
         UpdateFishReelStatus();
-        PlayerInput();
+        PlayerFishingInput();
+        Detect_EndFishing();
+    }
+
+    void Detect_StartFishing()
+    {
+        if(Input.GetMouseButtonDown(0) && !fishingInProgress)
+        {
+            fishingInProgress = true;
+            Slider_playerInput.value = Slider_playerInput.maxValue * 0.5f;
+            ShowFishingActionUI(true);
+        }
+    }
+
+    void Detect_EndFishing()
+    {
+      
+        bool isWinner = Slider_fishReelStatus.value == Slider_fishReelStatus.maxValue;
+        bool isFail = Slider_playerInput.value == Mathf.Abs(looseBoundry);
+        if(isWinner)
+        {
+            // Choose Random Reward from rewardPool
+            // Display Reward
+            ShowFishingActionUI(false);
+            WinningUI.SetActive(true);
+            Detect_RestartGame();
+        }
+        else if (isFail)
+        {
+            ShowFishingActionUI(false);
+            LoosingUI.SetActive(true);
+            Detect_RestartGame();
+        }
+
+        void Detect_RestartGame()
+        {
+            canRestartGame = true;
+            if(Input.GetMouseButtonDown(0))
+            {
+                fishingInProgress = false;
+                isWinner = false;
+                isFail = false;
+                canRestartGame = false;
+                WinningUI.SetActive(false);
+                LoosingUI.SetActive(false);
+            }
+        }
+    }
+
+    void ShowFishingActionUI(bool choice)
+    {
+        Slider_playerInput.gameObject.SetActive(choice);
+        Slider_fishReelStatus.gameObject.SetActive(choice);
     }
 
     void MoveSliderAutomatically()
     {
-        Slider_playerInput.value += (gameMoveSpeed * moveDirection);
+        if(!canRestartGame)
+        {
+            Slider_playerInput.value += (gameMoveSpeed * moveDirection);
+        }
     }
 
     void UpdateFishReelStatus()
@@ -51,9 +114,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void PlayerInput()
+    void PlayerFishingInput()
     {
-        if(Input.GetMouseButton(0))
+        if(Input.GetMouseButton(0) && fishingInProgress && !canRestartGame)
         {
             Slider_playerInput.value -= (playerMoveSpeed * moveDirection);
         }

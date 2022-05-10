@@ -29,10 +29,14 @@ public class GameManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        Detect_StartFishing();
         MoveSliderAutomatically();
         UpdateFishReelStatus();
         PlayerFishingInput();
+    }
+
+    void Update()
+    {
+        Detect_StartFishing();
         Detect_EndFishing();
     }
 
@@ -48,36 +52,48 @@ public class GameManager : MonoBehaviour
 
     void Detect_EndFishing()
     {
-      
         bool isWinner = Slider_fishReelStatus.value == Slider_fishReelStatus.maxValue;
-        bool isFail = Slider_playerInput.value == Mathf.Abs(looseBoundry);
+        bool isFail =   Slider_playerInput.value == Mathf.Abs(looseBoundry) 
+        ||              Slider_playerInput.value == Mathf.Abs(100-looseBoundry);
+
         if(isWinner)
         {
             // Choose Random Reward from rewardPool
             // Display Reward
             ShowFishingActionUI(false);
             WinningUI.SetActive(true);
-            Detect_RestartGame();
         }
         else if (isFail)
         {
             ShowFishingActionUI(false);
             LoosingUI.SetActive(true);
-            Detect_RestartGame();
         }
+        Detect_RestartGame();
 
         void Detect_RestartGame()
         {
-            canRestartGame = true;
-            if(Input.GetMouseButtonDown(0))
+            if(isWinner || isFail)
+            {
+                canRestartGame = true;
+                ResetSliders();
+            }
+
+            if(Input.GetMouseButtonDown(0) && canRestartGame)
             {
                 fishingInProgress = false;
                 isWinner = false;
                 isFail = false;
-                canRestartGame = false;
                 WinningUI.SetActive(false);
                 LoosingUI.SetActive(false);
+                ResetSliders();
+                canRestartGame = false;
             }
+        }
+                
+        void ResetSliders()
+        {
+            Slider_fishReelStatus.value = Slider_playerInput.maxValue * 0.5f;
+            Slider_fishReelStatus.value = 0f;
         }
     }
 
@@ -97,7 +113,10 @@ public class GameManager : MonoBehaviour
 
     void UpdateFishReelStatus()
     {
-        Slider_fishReelStatus.value += fishReelSpeed;
+        if(!canRestartGame && fishingInProgress)
+        {
+            Slider_fishReelStatus.value += fishReelSpeed;
+        }
     }
 
     void ChooseMoveDirection()

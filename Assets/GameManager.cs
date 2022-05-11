@@ -53,8 +53,8 @@ public class GameManager : MonoBehaviour
     void Detect_EndFishing()
     {
         bool isWinner = Slider_fishReelStatus.value == Slider_fishReelStatus.maxValue;
-        bool isFail =   Slider_playerInput.value == Mathf.Abs(looseBoundry) 
-        ||              Slider_playerInput.value == Mathf.Abs(100-looseBoundry);
+        bool isFail =   Slider_playerInput.value <= looseBoundry
+        ||              Slider_playerInput.value >= Mathf.Abs(100-looseBoundry);
 
         if(isWinner)
         {

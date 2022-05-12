@@ -1546,13 +1546,12 @@ MonoBehaviour:
   Slider_fishReelStatus: {fileID: 1562679410}
   WinningUI: {fileID: 755100164}
   LoosingUI: {fileID: 1837257376}
-  gameMoveSpeed: 2
-  playerMoveSpeed: 3
-  fishReelSpeed: 0.1
+  gameMoveSpeed: 70
+  playerMoveSpeed: 105
+  fishReelSpeed: 4
   looseBoundry: 13
   moveDirection: 1
-  fishingInProgress: 0
-  canRestartGame: 0
+  currentGameState: 1
 --- !u!1 &1856505006
 GameObject:
   m_ObjectHideFlags: 0

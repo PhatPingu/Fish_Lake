@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Slider Slider_playerInput;
     [SerializeField] private Slider Slider_fishReelStatus;
 
+    [SerializeField] private GameObject BG_Yellow;
+    [SerializeField] private GameObject BG_Green;
+
     [Header("Display Text")]
     [SerializeField] private GameObject WinningUI;
     [SerializeField] private GameObject LoosingUI;
@@ -20,15 +23,24 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float playerMoveSpeed;
     [SerializeField] private float fishReelSpeed;
     [SerializeField] private float fishReelSlowSpeed;
-    [SerializeField] private float slowReelBoundry;
-    [SerializeField] private float looseBoundry;
+    
+    [Header("Slider Area in Percents")]
+    [SerializeField] private float yellow_Area;
+    [SerializeField] private float green_Area;
+
+    private float sliderWidth;
     
     [Header("Info for Debug")]
+    [SerializeField] private float yellow_BoundryPercent;
+    [SerializeField] private float green_BoundryPercent;
+    [SerializeField] private float yellow_BoundryValue;
+    [SerializeField] private float green_BoundryValue;
     [SerializeField] private float moveDirection = 1f;
     [SerializeField] private float alarmStart_time = 2f;
 
     private bool input_MouseButtonDown_0;
     private bool input_MouseButtonHeld_0;
+
     
     private enum GameState
     {
@@ -45,11 +57,13 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         currentGameState = GameState.Idle;
+        sliderWidth = Slider_playerInput.GetComponent<RectTransform>().sizeDelta.x;
     }
 
     void Update()
     {
         DetectInput();
+        Update_Boundries();
         Update_GameState();
         Detect_StartFishing();
         Detect_EndFishing();
@@ -73,6 +87,28 @@ public class GameManager : MonoBehaviour
         else
         {
             input_MouseButtonHeld_0 = false;
+        }
+    }
+
+    void Update_Boundries()
+    {
+        yellow_BoundryPercent = Mathf.Abs(100 - yellow_Area) * 0.5f;
+        green_BoundryPercent = Mathf.Abs(100 - green_Area) * 0.5f;
+
+        yellow_BoundryValue = yellow_BoundryPercent * sliderWidth * 0.01f;
+        green_BoundryValue = green_BoundryPercent * sliderWidth * 0.01f;
+
+        RectTransform yellowTransform = BG_Yellow.GetComponent<RectTransform>();
+        yellowTransform.offsetMin = new Vector2 (yellow_BoundryValue, yellowTransform.offsetMin.y);
+        yellowTransform.offsetMax = new Vector2 (-yellow_BoundryValue, yellowTransform.offsetMax.y);
+
+        RectTransform greenTransform = BG_Green.GetComponent<RectTransform>();
+        greenTransform.offsetMin = new Vector2 (green_BoundryValue, greenTransform.offsetMin.y);
+        greenTransform.offsetMax = new Vector2 (-green_BoundryValue, greenTransform.offsetMax.y);
+
+        if (yellow_BoundryValue > green_BoundryValue)
+        {
+            yellow_BoundryValue = green_BoundryValue;
         }
     }
 
@@ -152,8 +188,8 @@ public class GameManager : MonoBehaviour
     void Detect_EndFishing()
     {
         bool isWin = Slider_fishReelStatus.value == Slider_fishReelStatus.maxValue;
-        bool isLoss =   Slider_playerInput.value <= looseBoundry
-        ||              Slider_playerInput.value >= Mathf.Abs(100-looseBoundry);
+        bool isLoss =   Slider_playerInput.value <= yellow_BoundryPercent
+        ||              Slider_playerInput.value >= Mathf.Abs(100-yellow_BoundryPercent);
 
         if(isWin)
         {
@@ -189,8 +225,8 @@ public class GameManager : MonoBehaviour
     void Game_MoveSliders()
     {
         float currentSpeed;
-        if (    Slider_playerInput.value <= slowReelBoundry 
-        ||      Slider_playerInput.value >= Mathf.Abs(100-slowReelBoundry))
+        if (    Slider_playerInput.value <= green_BoundryPercent
+        ||      Slider_playerInput.value >= Mathf.Abs(100-green_BoundryPercent))
         {
             currentSpeed = fishReelSlowSpeed;
         }

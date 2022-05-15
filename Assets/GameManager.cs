@@ -8,7 +8,9 @@ public class GameManager : MonoBehaviour
     [Header("Sliders")] 
     [SerializeField] private Slider Slider_playerInput;
     [SerializeField] private Slider Slider_fishReelStatus;
+    [SerializeField] private Slider Slider_fishCircle;
 
+    [Header("GameObjects")] 
     [SerializeField] private GameObject BG_Yellow;
     [SerializeField] private GameObject BG_Green;
 
@@ -19,18 +21,22 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject DelayCount_01;
     
     [Header("Game Attributes")]
+    [SerializeField] private float playerCastForce;
     [SerializeField] private float gameMoveSpeed;
     [SerializeField] private float playerMoveSpeed;
     [SerializeField] private float fishReelSpeed;
     [SerializeField] private float fishReelSlowSpeed;
     
     [Header("Slider Area in Percents")]
-    [SerializeField] private float yellow_Area;
-    [SerializeField] private float green_Area;
+    [SerializeField] private float default_yellowArea;
+    [SerializeField] private float default_greenArea;
+    [SerializeField] private float current_yellowArea;
+    [SerializeField] private float current_greenArea;
 
     private float sliderWidth;
     
     [Header("Info for Debug")]
+    [SerializeField] private float fishCircleLocation;
     [SerializeField] private float yellow_BoundryPercent;
     [SerializeField] private float green_BoundryPercent;
     [SerializeField] private float yellow_BoundryValue;
@@ -45,6 +51,7 @@ public class GameManager : MonoBehaviour
     private enum GameState
     {
         Idle,
+        CastingLine,
         BeforeFishing,
         Fishing,
         Game_Won,
@@ -92,8 +99,8 @@ public class GameManager : MonoBehaviour
 
     void Update_Boundries()
     {
-        yellow_BoundryPercent = Mathf.Abs(100 - yellow_Area) * 0.5f;
-        green_BoundryPercent = Mathf.Abs(100 - green_Area) * 0.5f;
+        yellow_BoundryPercent = Mathf.Abs(100 - current_yellowArea) * 0.5f;
+        green_BoundryPercent = Mathf.Abs(100 - current_greenArea) * 0.5f;
 
         yellow_BoundryValue = yellow_BoundryPercent * sliderWidth * 0.01f;
         green_BoundryValue = green_BoundryPercent * sliderWidth * 0.01f;
@@ -117,15 +124,25 @@ public class GameManager : MonoBehaviour
         if (currentGameState == GameState.Idle)
         {
             ChooseMoveDirection();
+            ChooseFishCircleLocation();
             Slider_playerInput.value = Slider_playerInput.maxValue * 0.5f;
             Slider_fishReelStatus.value = 0f;
+            Slider_fishCircle.value = 0f;
+            current_yellowArea = default_yellowArea;
+            current_greenArea = default_greenArea;
             ShowFishingActionUI(false);
             WinningUI.SetActive(false);
             LoosingUI.SetActive(false);
         }
+        
+        if (currentGameState == GameState.CastingLine)
+        {
+
+        }
 
         if (currentGameState == GameState.BeforeFishing)
         {
+            Define_SliderAreas();
             ShowFishingActionUI(true);
             if(DelayCount_Alarm(alarmStart_time))
             {
@@ -179,8 +196,25 @@ public class GameManager : MonoBehaviour
 
     void Detect_StartFishing()
     {
-        if(input_MouseButtonDown_0 && currentGameState == GameState.Idle)
+        if ((input_MouseButtonDown_0 || input_MouseButtonHeld_0) && currentGameState == GameState.Idle)
         {
+            currentGameState = GameState.CastingLine;
+        }
+
+        bool isCasting; 
+        if(input_MouseButtonHeld_0 && currentGameState == GameState.CastingLine)
+        {
+            Slider_fishCircle.value += (playerCastForce * Time.deltaTime);
+            isCasting = true;
+        } 
+        else
+        {
+            isCasting = false;
+        }
+        
+        if (isCasting && !input_MouseButtonHeld_0)
+        {
+            isCasting = false;
             currentGameState = GameState.BeforeFishing;
         }
     }
@@ -214,6 +248,18 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    void ChooseFishCircleLocation()
+    {
+        fishCircleLocation = Random.Range(Slider_fishCircle.minValue * 0.1f, Slider_fishCircle.maxValue);
+    }
+
+    void Define_SliderAreas()
+    {
+        float castScore = Mathf.Abs(Slider_fishCircle.value - fishCircleLocation);
+        current_yellowArea = default_yellowArea * castScore * 0.01f;
+        current_greenArea = default_greenArea * castScore * 0.01f;
     }
 
     void ShowFishingActionUI(bool choice)

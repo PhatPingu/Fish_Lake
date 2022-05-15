@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
 
     private bool input_MouseButtonDown_0;
     private bool input_MouseButtonHeld_0;
+    private bool isCasting;
 
     
     private enum GameState
@@ -65,6 +66,8 @@ public class GameManager : MonoBehaviour
     {
         currentGameState = GameState.Idle;
         sliderWidth = Slider_playerInput.GetComponent<RectTransform>().sizeDelta.x;
+        current_yellowArea = default_yellowArea;
+        current_greenArea = default_greenArea;
     }
 
     void Update()
@@ -144,7 +147,7 @@ public class GameManager : MonoBehaviour
         {
             Define_SliderAreas();
             ShowFishingActionUI(true);
-            if(DelayCount_Alarm(alarmStart_time))
+            if(DelayCount_Alarm(alarmStart_time, true))
             {
                 currentGameState = GameState.Fishing;
                 alarmStart_time = 2f;
@@ -161,62 +164,75 @@ public class GameManager : MonoBehaviour
         {
             ShowFishingActionUI(false);
             WinningUI.SetActive(true);
+            Detect_RestartGame();
         }
         if (currentGameState == GameState.Game_Loss)
         {
             ShowFishingActionUI(false);
             LoosingUI.SetActive(true);
+            Detect_RestartGame();
         }
 
-        bool DelayCount_Alarm(float resetAlarm_time)  // this uses a placeholder DelayCount_Animation
+        bool DelayCount_Alarm(float resetAlarm_time, bool displayTimer)  // this uses a placeholder DelayCount_Animation
         {
             alarmStart_time -= Time.deltaTime;
 
             if(alarmStart_time < 0)
             {
                 alarmStart_time = resetAlarm_time;
-                DelayCount_02.SetActive(false);
-                DelayCount_01.SetActive(false);
+                if (displayTimer)
+                {
+                    DelayCount_02.SetActive(false);
+                    DelayCount_01.SetActive(false);
+                }
                 return true;
             }
-            else if(alarmStart_time < 1)
+            else if(alarmStart_time < 1 && displayTimer)
             {
                 DelayCount_02.SetActive(false);
                 DelayCount_01.SetActive(true);
                 return false;
             }
-            else
+            else if (displayTimer)
             {
                 DelayCount_02.SetActive(true);
                 DelayCount_01.SetActive(false);
                 return false;
             }
+            else
+            {
+                return false;
+            }
         }        
+
+        void Detect_RestartGame()
+        {
+            if(DelayCount_Alarm(alarmStart_time, false) && input_MouseButtonDown_0)
+            {  
+                currentGameState = GameState.Idle; 
+            }
+        }
     }
 
     void Detect_StartFishing()
-    {
+    { 
         if ((input_MouseButtonDown_0 || input_MouseButtonHeld_0) && currentGameState == GameState.Idle)
         {
+            isCasting = false;
             currentGameState = GameState.CastingLine;
         }
 
-        bool isCasting; 
         if(input_MouseButtonHeld_0 && currentGameState == GameState.CastingLine)
         {
             Slider_fishCircle.value += (playerCastForce * Time.deltaTime);
             isCasting = true;
         } 
-        else
-        {
-            isCasting = false;
-        }
         
         if (isCasting && !input_MouseButtonHeld_0)
         {
             isCasting = false;
             currentGameState = GameState.BeforeFishing;
-        }
+        } 
     }
 
     void Detect_EndFishing()
@@ -235,19 +251,6 @@ public class GameManager : MonoBehaviour
         {
             currentGameState = GameState.Game_Loss;
         }
-        Detect_RestartGame();
-
-        void Detect_RestartGame()
-        {
-            if(input_MouseButtonDown_0)
-            {
-                if(currentGameState == GameState.Game_Won 
-                || currentGameState == GameState.Game_Loss)
-                {
-                    currentGameState = GameState.Idle;
-                }
-            }
-        }
     }
 
     void ChooseFishCircleLocation()
@@ -258,8 +261,8 @@ public class GameManager : MonoBehaviour
     void Define_SliderAreas()
     {
         float castScore = Mathf.Abs(Slider_fishCircle.value - fishCircleLocation);
-        current_yellowArea = default_yellowArea * castScore * 0.01f;
-        current_greenArea = default_greenArea * castScore * 0.01f;
+        current_yellowArea = default_yellowArea - (castScore * 0.01f);
+        current_greenArea = default_greenArea - (castScore * 0.01f);
     }
 
     void ShowFishingActionUI(bool choice)

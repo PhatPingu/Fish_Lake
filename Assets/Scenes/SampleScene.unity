@@ -2684,14 +2684,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Slider_playerInput: {fileID: 1224708470}
   Slider_fishReelStatus: {fileID: 1562679410}
-  Slider_fishCircle: {fileID: 0}
+  Slider_fishCircle: {fileID: 1576878542}
   BG_Yellow: {fileID: 1034658847}
   BG_Green: {fileID: 1168771240}
   WinningUI: {fileID: 755100164}
   LoosingUI: {fileID: 1837257376}
   DelayCount_02: {fileID: 203840381}
   DelayCount_01: {fileID: 1323399439}
-  playerCastForce: 0
+  playerCastForce: 10
   gameMoveSpeed: 90
   playerMoveSpeed: 150
   fishReelSpeed: 7

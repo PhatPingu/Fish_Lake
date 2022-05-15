@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     [Header("Sliders")] 
     [SerializeField] private Slider Slider_playerInput;
     [SerializeField] private Slider Slider_fishReelStatus;
+    [SerializeField] private Slider Slider_castLine;
     [SerializeField] private Slider Slider_fishCircle;
 
     [Header("GameObjects")] 
@@ -49,6 +50,7 @@ public class GameManager : MonoBehaviour
     private bool isCasting;
     private bool canRestart;      
     private bool restartAlarm;
+    private bool define_NewCircleLocation;
 
     private enum GameState
     {
@@ -70,6 +72,7 @@ public class GameManager : MonoBehaviour
         alarmStart_time = 0f;
         current_yellowArea = default_yellowArea;
         current_greenArea = default_greenArea;
+        define_NewCircleLocation = true;
     }
 
     void Update()
@@ -133,7 +136,7 @@ public class GameManager : MonoBehaviour
             ChooseFishCircleLocation();
             Slider_playerInput.value = Slider_playerInput.maxValue * 0.5f;
             Slider_fishReelStatus.value = 0f;
-            Slider_fishCircle.value = 0f;
+            Slider_castLine.value = 0f;
             current_yellowArea = default_yellowArea;
             current_greenArea = default_greenArea;
             ShowFishingActionUI(false);
@@ -164,6 +167,7 @@ public class GameManager : MonoBehaviour
 
         if (currentGameState == GameState.Game_Won)
         {
+            define_NewCircleLocation = true;
             ShowFishingActionUI(false);
             WinningUI.SetActive(true);
             if(Alarm_DelayCount(0.5f, false))
@@ -174,6 +178,7 @@ public class GameManager : MonoBehaviour
         
         if (currentGameState == GameState.Game_Loss)
         {
+            define_NewCircleLocation = true;
             ShowFishingActionUI(false);
             LoosingUI.SetActive(true);
             if(Alarm_DelayCount(0.5f, false))
@@ -229,7 +234,7 @@ public class GameManager : MonoBehaviour
 
         if(input_MouseButtonHeld_0 && currentGameState == GameState.CastingLine)
         {
-            Slider_fishCircle.value += (playerCastForce * Time.deltaTime);
+            Slider_castLine.value += (playerCastForce * Time.deltaTime);
             isCasting = true;
         } 
         
@@ -269,14 +274,19 @@ public class GameManager : MonoBehaviour
 
     void ChooseFishCircleLocation()
     {
-        fishCircleLocation = Random.Range(Slider_fishCircle.minValue * 0.1f, Slider_fishCircle.maxValue);
+        if(define_NewCircleLocation)
+        {
+            fishCircleLocation = Random.Range(Slider_fishCircle.minValue * 0.1f, Slider_fishCircle.maxValue);
+            Slider_fishCircle.value = fishCircleLocation;
+            define_NewCircleLocation = false;
+        }
     }
 
     void Define_SliderAreas()
     {
-        float castScore = Mathf.Abs(Slider_fishCircle.value - fishCircleLocation);
-        current_yellowArea = default_yellowArea - (castScore * 0.01f);
-        current_greenArea = default_greenArea - (castScore * 0.01f);
+        float castScore = Mathf.Abs(Slider_castLine.value - fishCircleLocation);
+        current_yellowArea = default_yellowArea * (100 - castScore) * 0.01f;
+        current_greenArea = default_greenArea * (100 - castScore) * 0.01f;
     }
 
     void ShowFishingActionUI(bool choice)

@@ -47,8 +47,8 @@ public class GameManager : MonoBehaviour
     private bool input_MouseButtonDown_0;
     private bool input_MouseButtonHeld_0;
     private bool isCasting;
+    private bool canRestart;      
 
-    
     private enum GameState
     {
         Idle,
@@ -77,6 +77,7 @@ public class GameManager : MonoBehaviour
         Update_GameState();
         Detect_StartFishing();
         Detect_EndFishing();
+        Detect_RestartGame();
     }
 
     void DetectInput()
@@ -164,59 +165,58 @@ public class GameManager : MonoBehaviour
         {
             ShowFishingActionUI(false);
             WinningUI.SetActive(true);
-            Detect_RestartGame();
+            if(DelayCount_Alarm(alarmStart_time, false))
+            {
+                canRestart = true;
+                alarmStart_time = 2f;
+            }
         }
+        
         if (currentGameState == GameState.Game_Loss)
         {
             ShowFishingActionUI(false);
             LoosingUI.SetActive(true);
-            Detect_RestartGame();
-        }
-
-        bool DelayCount_Alarm(float resetAlarm_time, bool displayTimer)  // this uses a placeholder DelayCount_Animation
-        {
-            alarmStart_time -= Time.deltaTime;
-
-            if(alarmStart_time < 0)
+            if(DelayCount_Alarm(alarmStart_time, false))
             {
-                alarmStart_time = resetAlarm_time;
-                if (displayTimer)
-                {
-                    DelayCount_02.SetActive(false);
-                    DelayCount_01.SetActive(false);
-                }
-                return true;
-            }
-            else if(alarmStart_time < 1 && displayTimer)
-            {
-                DelayCount_02.SetActive(false);
-                DelayCount_01.SetActive(true);
-                return false;
-            }
-            else if (displayTimer)
-            {
-                DelayCount_02.SetActive(true);
-                DelayCount_01.SetActive(false);
-                return false;
-            }
-            else
-            {
-                return false;
-            }
-        }        
-
-        void Detect_RestartGame()
-        {
-            if(DelayCount_Alarm(alarmStart_time, false) && input_MouseButtonDown_0)
-            {  
-                currentGameState = GameState.Idle; 
+                canRestart = true;
+                alarmStart_time = 2f;
             }
         }
     }
+    
+    bool DelayCount_Alarm(float resetAlarm_time, bool displayTimer)  // this uses a placeholder DelayCount_Animation
+    {
+        alarmStart_time -= Time.deltaTime;
+
+        if(alarmStart_time < 0)
+        {
+            alarmStart_time = resetAlarm_time;
+            DelayCount_02.SetActive(false);
+            DelayCount_01.SetActive(false);     
+            return true;
+        }
+        else if(alarmStart_time < 1 && displayTimer)
+        {
+            DelayCount_02.SetActive(false);
+            DelayCount_01.SetActive(true);
+            return false;
+        }
+        else if (displayTimer)
+        {
+            DelayCount_02.SetActive(true);
+            DelayCount_01.SetActive(false);
+            return false;
+        }
+        else
+        {
+            return false;
+        }
+    }        
 
     void Detect_StartFishing()
     { 
-        if ((input_MouseButtonDown_0 || input_MouseButtonHeld_0) && currentGameState == GameState.Idle)
+        if ((input_MouseButtonDown_0 || input_MouseButtonHeld_0) 
+        && currentGameState == GameState.Idle && DelayCount_Alarm(alarmStart_time, false))
         {
             isCasting = false;
             currentGameState = GameState.CastingLine;
@@ -250,6 +250,15 @@ public class GameManager : MonoBehaviour
         else if (isLoss)
         {
             currentGameState = GameState.Game_Loss;
+        }
+    }
+
+    void Detect_RestartGame()
+    {
+        if (canRestart && input_MouseButtonDown_0)
+        {  
+            currentGameState = GameState.Idle; 
+            canRestart = false;
         }
     }
 

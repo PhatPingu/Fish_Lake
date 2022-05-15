@@ -42,12 +42,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float yellow_BoundryValue;
     [SerializeField] private float green_BoundryValue;
     [SerializeField] private float moveDirection = 1f;
-    [SerializeField] private float alarmStart_time = 2f;
+    [SerializeField] private float alarmStart_time;
 
     private bool input_MouseButtonDown_0;
     private bool input_MouseButtonHeld_0;
     private bool isCasting;
     private bool canRestart;      
+    private bool restartAlarm;
 
     private enum GameState
     {
@@ -66,6 +67,7 @@ public class GameManager : MonoBehaviour
     {
         currentGameState = GameState.Idle;
         sliderWidth = Slider_playerInput.GetComponent<RectTransform>().sizeDelta.x;
+        alarmStart_time = 0f;
         current_yellowArea = default_yellowArea;
         current_greenArea = default_greenArea;
     }
@@ -148,10 +150,9 @@ public class GameManager : MonoBehaviour
         {
             Define_SliderAreas();
             ShowFishingActionUI(true);
-            if(DelayCount_Alarm(alarmStart_time, true))
+            if(Alarm_DelayCount(2f, true))
             {
                 currentGameState = GameState.Fishing;
-                alarmStart_time = 2f;
             }
         }
 
@@ -165,10 +166,9 @@ public class GameManager : MonoBehaviour
         {
             ShowFishingActionUI(false);
             WinningUI.SetActive(true);
-            if(DelayCount_Alarm(alarmStart_time, false))
+            if(Alarm_DelayCount(0.5f, false))
             {
                 canRestart = true;
-                alarmStart_time = 2f;
             }
         }
         
@@ -176,21 +176,26 @@ public class GameManager : MonoBehaviour
         {
             ShowFishingActionUI(false);
             LoosingUI.SetActive(true);
-            if(DelayCount_Alarm(alarmStart_time, false))
+            if(Alarm_DelayCount(0.5f, false))
             {
                 canRestart = true;
-                alarmStart_time = 2f;
             }
         }
     }
     
-    bool DelayCount_Alarm(float resetAlarm_time, bool displayTimer)  // this uses a placeholder DelayCount_Animation
+    bool Alarm_DelayCount(float alarm_time, bool displayTimer)  // this uses a placeholder DelayCount_Animation
     {
+        if(restartAlarm)
+        {
+            alarmStart_time = alarm_time;
+            restartAlarm = false;
+        }
+
         alarmStart_time -= Time.deltaTime;
 
         if(alarmStart_time < 0)
         {
-            alarmStart_time = resetAlarm_time;
+            restartAlarm = true;
             DelayCount_02.SetActive(false);
             DelayCount_01.SetActive(false);     
             return true;
@@ -216,7 +221,7 @@ public class GameManager : MonoBehaviour
     void Detect_StartFishing()
     { 
         if ((input_MouseButtonDown_0 || input_MouseButtonHeld_0) 
-        && currentGameState == GameState.Idle && DelayCount_Alarm(alarmStart_time, false))
+        && currentGameState == GameState.Idle && Alarm_DelayCount(0.5f, false))
         {
             isCasting = false;
             currentGameState = GameState.CastingLine;

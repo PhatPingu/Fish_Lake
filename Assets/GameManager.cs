@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     [Header("GameObjects")] 
     [SerializeField] private GameObject BG_Yellow;
     [SerializeField] private GameObject BG_Green;
+    [SerializeField] private GameObject SFX;
 
     [Header("Display Text")]
     [SerializeField] private GameObject WinningUI;
@@ -52,16 +53,17 @@ public class GameManager : MonoBehaviour
     private bool restartAlarm;
     private bool define_NewCircleLocation;
 
-    private enum GameState
+    public enum GameState
     {
         Idle,
         CastingLine,
         BeforeFishing,
         Fishing,
         Game_Won,
-        Game_Loss
+        Game_Loss,
+        Reward
     }
-    [SerializeField] private GameState currentGameState;
+    [SerializeField] public GameState currentGameState;
 
 
 

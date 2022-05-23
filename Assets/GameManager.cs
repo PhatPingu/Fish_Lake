@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject BG_Yellow;
     [SerializeField] private GameObject BG_Green;
     [SerializeField] private GameObject SFX;
+    [SerializeField] private GameObject Handle_CastLocation;
+    [SerializeField] private GameObject LineCast;
 
     [Header("Display Text")]
     [SerializeField] private GameObject WinningUI;
@@ -159,6 +161,7 @@ public class GameManager : MonoBehaviour
             {
                 currentGameState = GameState.Fishing;
             }
+            
         }
 
         if (currentGameState == GameState.Fishing)
@@ -295,6 +298,8 @@ public class GameManager : MonoBehaviour
     {
         Slider_playerInput.gameObject.SetActive(choice);
         Slider_fishReelStatus.gameObject.SetActive(choice);
+        Handle_CastLocation.SetActive(choice);
+        LineCast.SetActive(choice);
     }
 
     void Game_MoveSliders()

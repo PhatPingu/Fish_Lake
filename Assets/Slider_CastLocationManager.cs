@@ -1,18 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Slider_CastLocationManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private Slider Slider_CastLine;
+    [SerializeField] private Slider Slider_CastLocation;
 
-    // Update is called once per frame
     void Update()
     {
-        
+        Slider_CastLocation.value = Slider_CastLine.value;
     }
 }

@@ -45,7 +45,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float green_BoundryPercent;
     [SerializeField] private float yellow_BoundryValue;
     [SerializeField] private float green_BoundryValue;
-    [SerializeField] private float moveDirection = 1f;
     [SerializeField] private float alarmStart_time;
 
     private bool input_MouseButtonDown_0;
@@ -136,7 +135,6 @@ public class GameManager : MonoBehaviour
     {
         if (currentGameState == GameState.Idle)
         {
-            ChooseMoveDirection();
             ChooseFishCircleLocation();
             Slider_playerInput.value = Slider_playerInput.maxValue * 0.5f;
             Slider_fishReelStatus.value = 0f;
@@ -315,29 +313,16 @@ public class GameManager : MonoBehaviour
             currentSpeed = fishReelSpeed;
         }
 
-        Slider_playerInput.value += (gameMoveSpeed * moveDirection * Time.deltaTime);
+        Slider_playerInput.value += (gameMoveSpeed * Time.deltaTime);
         Slider_fishReelStatus.value += (currentSpeed * Time.deltaTime);
     }
 
-    void ChooseMoveDirection()
-    {
-        float direction = Random.Range(0f,1f);
-        {
-            if (direction < 0.5f)
-            {
-                moveDirection = 1f;
-            }
-            else{
-                moveDirection = -1f;
-            }
-        }
-    }
 
     void PlayerFishingInput()
     {
         if(input_MouseButtonHeld_0)
         {
-            Slider_playerInput.value -= (playerMoveSpeed * moveDirection * Time.deltaTime);
+            Slider_playerInput.value -= (playerMoveSpeed * Time.deltaTime);
         }
     }
 }

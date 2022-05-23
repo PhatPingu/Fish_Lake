@@ -17,11 +17,11 @@ public class SFX_Manager : MonoBehaviour
 
     void Play_SFX()
     {
-        if (GameManager.currentGameState == GameManager.GameState.CastingLine
-        &&                 lastGameState != GameManager.GameState.CastingLine)
+        if (GameManager.currentGameState == GameManager.GameState.BeforeFishing
+        &&                 lastGameState != GameManager.GameState.BeforeFishing)
         {
             audioSource.PlayOneShot(sfx_List[0]);
-            lastGameState = GameManager.GameState.CastingLine;
+            lastGameState = GameManager.GameState.BeforeFishing;
         }
 
         if (GameManager.currentGameState == GameManager.GameState.Game_Won

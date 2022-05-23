@@ -5,7 +5,7 @@ public class RenderCastLine : MonoBehaviour
 {
     [SerializeField] private LineRenderer castLine;
 
-    [SerializeField] private GameObject fishCircle_handle;
+    [SerializeField] private GameObject castLocation_handle;
     [SerializeField] private GameObject fishingRodTip;
 
     [SerializeField] private Vector3 fishingRod_position;
@@ -20,7 +20,9 @@ public class RenderCastLine : MonoBehaviour
     void Update_CastLine()
     {
         fishingRod_position = fishingRodTip.transform.position;
-        fishingBulb_position = Camera.main.ScreenToWorldPoint(fishCircle_handle.transform.position);
+        fishingRod_position.z = -1f;
+        fishingBulb_position = Camera.main.ScreenToWorldPoint(castLocation_handle.transform.position);
+        fishingBulb_position.z = -1f;
         
         castLine.SetPosition(0, fishingRod_position);
         castLine.SetPosition(1, fishingBulb_position);

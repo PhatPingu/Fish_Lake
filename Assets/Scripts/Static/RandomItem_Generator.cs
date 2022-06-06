@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RandomItem_Generator : MonoBehaviour
+public static class RandomItem_Generator
 {
     public static void PickRandomItem()
     {

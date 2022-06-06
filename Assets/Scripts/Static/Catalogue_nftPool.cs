@@ -12,7 +12,6 @@ public static class Catalogue_nftPool
         for(int i = 0; i < Catalogue_BlockChain.sourceID_nftList.Count; i++)
         {
             localID_nftList.Add(Catalogue_BlockChain.sourceID_nftList[i]);
-            Debug.Log(localID_nftList[i].ToString());
         }
     }
 }

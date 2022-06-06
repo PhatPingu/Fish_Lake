@@ -12,7 +12,6 @@ public class Music_Manager : MonoBehaviour
 
     void Start()
     {
-        DontDestroyOnLoad(this);
         CurrentMusic.clip = musicList[Random.Range(0, musicList.Length)];
         CurrentMusic.Play();
         currentClipLength = CurrentMusic.clip.length;

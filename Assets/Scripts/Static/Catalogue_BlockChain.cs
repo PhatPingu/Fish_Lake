@@ -13,7 +13,6 @@ public static class Catalogue_BlockChain
         for(int i = 0; i < randomMax; i++)
         {
             sourceID_nftList.Add(i);
-            Debug.Log(sourceID_nftList[i].ToString());
         }
     }
 }

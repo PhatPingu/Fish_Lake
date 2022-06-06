@@ -4,16 +4,16 @@ using UnityEngine;
 
 public static class Catalogue_BlockChain
 {
-    public static List<int> source_nftList;
+    public static List<int> sourceID_nftList;
     
     public static void CreateList_nftID() //This is TEMP for now
     {
-        source_nftList = new List<int>();
+        sourceID_nftList = new List<int>();
         int randomMax = Random.Range(20,50);
         for(int i = 0; i < randomMax; i++)
         {
-            source_nftList.Add(i);
-            Debug.Log(source_nftList[i].ToString());
+            sourceID_nftList.Add(i);
+            Debug.Log(sourceID_nftList[i].ToString());
         }
     }
 }

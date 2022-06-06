@@ -317,7 +317,6 @@ public class GameManager : MonoBehaviour
         Slider_fishReelStatus.value += (currentSpeed * Time.deltaTime);
     }
 
-
     void PlayerFishingInput()
     {
         if(input_MouseButtonHeld_0)

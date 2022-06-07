@@ -21,8 +21,8 @@ public class GameManager : MonoBehaviour
     [Header("Display Text")]
     [SerializeField] private GameObject WinningUI;
     [SerializeField] private GameObject LoosingUI;
-    [SerializeField] private GameObject DelayCount_02;
-    [SerializeField] private GameObject DelayCount_01;
+    //[SerializeField] private GameObject DelayCount_02; //
+    //[SerializeField] private GameObject DelayCount_01; //
     
     [Header("Game Attributes")]
     [SerializeField] private float playerCastForce;
@@ -45,13 +45,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float green_BoundryPercent;
     [SerializeField] private float yellow_BoundryValue;
     [SerializeField] private float green_BoundryValue;
-    [SerializeField] private float alarmStart_time;
+    //[SerializeField] private float alarmStart_time; //
 
     private bool input_MouseButtonDown_0;
     private bool input_MouseButtonHeld_0;
     private bool isCasting;
     private bool canRestart;      
-    private bool restartAlarm;
+    //private bool restartAlarm; //
     private bool define_NewCircleLocation;
 
     public enum GameState
@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
     {
         currentGameState = GameState.Idle;
         sliderWidth = Slider_playerInput.GetComponent<RectTransform>().sizeDelta.x;
-        alarmStart_time = 0f;
+        //alarmStart_time = 0f; //
         current_yellowArea = default_yellowArea;
         current_greenArea = default_greenArea;
         define_NewCircleLocation = true;
@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour
         Detect_RestartGame();
     }
 
-    void DetectInput()
+    void DetectInput()     // Maybe can be its own class?
     {
         if(Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
         {
@@ -155,7 +155,7 @@ public class GameManager : MonoBehaviour
         {
             Define_SliderAreas();
             ShowFishingActionUI(true);
-            if(Alarm_DelayCount(2f, true))
+            if(AlarmDelayCount.AlarmSetting(2f, true))
             {
                 currentGameState = GameState.Fishing;
             }
@@ -173,7 +173,7 @@ public class GameManager : MonoBehaviour
             define_NewCircleLocation = true;
             ShowFishingActionUI(false);
             WinningUI.SetActive(true);
-            if(Alarm_DelayCount(0.5f, false))
+            if(AlarmDelayCount.AlarmSetting(0.5f, false))
             {
                 canRestart = true;
             }
@@ -184,14 +184,15 @@ public class GameManager : MonoBehaviour
             define_NewCircleLocation = true;
             ShowFishingActionUI(false);
             LoosingUI.SetActive(true);
-            if(Alarm_DelayCount(0.5f, false))
+            if(AlarmDelayCount.AlarmSetting(0.5f, false))
             {
                 canRestart = true;
             }
         }
     }
     
-    bool Alarm_DelayCount(float alarm_time, bool displayTimer)  // this uses a placeholder DelayCount_Animation
+/*    bool Alarm_DelayCount(float alarm_time, bool displayTimer)  // Maybe can be its own class?
+    // This uses a placeholder DelayCount_Animation
     {
         if(restartAlarm)
         {
@@ -225,11 +226,11 @@ public class GameManager : MonoBehaviour
             return false;
         }
     }        
-
+*/
     void Detect_StartFishing()
     { 
         if ((input_MouseButtonDown_0 || input_MouseButtonHeld_0) 
-        && currentGameState == GameState.Idle && Alarm_DelayCount(0.5f, false))
+        && currentGameState == GameState.Idle && AlarmDelayCount.AlarmSetting(0.5f, false))
         {
             isCasting = false;
             currentGameState = GameState.CastingLine;
@@ -317,7 +318,7 @@ public class GameManager : MonoBehaviour
         Slider_fishReelStatus.value += (currentSpeed * Time.deltaTime);
     }
 
-    void PlayerFishingInput()
+    void PlayerFishingInput() // Maybe can be its own class?
     {
         if(input_MouseButtonHeld_0)
         {

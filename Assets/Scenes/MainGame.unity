@@ -374,8 +374,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 203840382}
   - {fileID: 1323399440}
+  - {fileID: 203840382}
   m_Father: {fileID: 1759284893}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -453,7 +453,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 169693599}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2217,7 +2217,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 169693599}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3585,8 +3585,6 @@ MonoBehaviour:
   LineCast: {fileID: 1452239697}
   WinningUI: {fileID: 755100164}
   LoosingUI: {fileID: 1837257376}
-  DelayCount_02: {fileID: 203840381}
-  DelayCount_01: {fileID: 1323399439}
   playerCastForce: 100
   gameMoveSpeed: 90
   playerMoveSpeed: 150
@@ -3601,7 +3599,6 @@ MonoBehaviour:
   green_BoundryPercent: 30
   yellow_BoundryValue: 0
   green_BoundryValue: 0
-  alarmStart_time: 2
   currentGameState: 1
 --- !u!114 &1849580989
 MonoBehaviour:
@@ -3615,6 +3612,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 316da9a4c6bebeb448231b96c7099772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DelayCount_01: {fileID: 1323399439}
+  DelayCount_02: {fileID: 203840381}
 --- !u!114 &1849580990
 MonoBehaviour:
   m_ObjectHideFlags: 0

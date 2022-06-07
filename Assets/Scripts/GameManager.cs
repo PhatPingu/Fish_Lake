@@ -66,7 +66,6 @@ public class GameManager : MonoBehaviour
     {
         currentGameState = GameState.Idle;
         sliderWidth = Slider_playerInput.GetComponent<RectTransform>().sizeDelta.x;
-        //alarmStart_time = 0f; //
         current_yellowArea = default_yellowArea;
         current_greenArea = default_greenArea;
         define_NewCircleLocation = true;
@@ -193,7 +192,7 @@ public class GameManager : MonoBehaviour
         if(isWin)
         {
             currentGameState = GameState.Game_Won;
-            // Choose Random Reward from rewardPool
+            RandomItem_Generator.PickRandomItem();
             // Display Reward
         }
         else if (isLoss)
@@ -253,7 +252,7 @@ public class GameManager : MonoBehaviour
         Slider_fishReelStatus.value += (currentSpeed * Time.deltaTime);
     }
 
-    void PlayerFishingInput() // Maybe can be its own class?
+    void PlayerFishingInput()
     {
         if(PlayerInput.ButtonHeld())
         {

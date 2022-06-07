@@ -21,8 +21,6 @@ public class GameManager : MonoBehaviour
     [Header("Display Text")]
     [SerializeField] private GameObject WinningUI;
     [SerializeField] private GameObject LoosingUI;
-    //[SerializeField] private GameObject DelayCount_02; //
-    //[SerializeField] private GameObject DelayCount_01; //
     
     [Header("Game Attributes")]
     [SerializeField] private float playerCastForce;
@@ -45,13 +43,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float green_BoundryPercent;
     [SerializeField] private float yellow_BoundryValue;
     [SerializeField] private float green_BoundryValue;
-    //[SerializeField] private float alarmStart_time; //
 
-    private bool input_MouseButtonDown_0;
-    private bool input_MouseButtonHeld_0;
     private bool isCasting;
     private bool canRestart;      
-    //private bool restartAlarm; //
     private bool define_NewCircleLocation;
 
     public enum GameState
@@ -80,33 +74,11 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        DetectInput();
         Update_Boundries();
         Update_GameState();
         Detect_StartFishing();
         Detect_EndFishing();
         Detect_RestartGame();
-    }
-
-    void DetectInput()     // Maybe can be its own class?
-    {
-        if(Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
-        {
-            input_MouseButtonDown_0 = true;
-        }
-        else
-        {
-            input_MouseButtonDown_0 = false;
-        }
-        
-        if(Input.GetMouseButton(0) || Input.GetKey(KeyCode.Space))
-        {
-            input_MouseButtonHeld_0 = true;
-        }
-        else
-        {
-            input_MouseButtonHeld_0 = false;
-        }
     }
 
     void Update_Boundries()
@@ -159,7 +131,6 @@ public class GameManager : MonoBehaviour
             {
                 currentGameState = GameState.Fishing;
             }
-            
         }
 
         if (currentGameState == GameState.Fishing)
@@ -191,58 +162,22 @@ public class GameManager : MonoBehaviour
         }
     }
     
-/*    bool Alarm_DelayCount(float alarm_time, bool displayTimer)  // Maybe can be its own class?
-    // This uses a placeholder DelayCount_Animation
-    {
-        if(restartAlarm)
-        {
-            alarmStart_time = alarm_time;
-            restartAlarm = false;
-        }
-
-        alarmStart_time -= Time.deltaTime;
-
-        if(alarmStart_time < 0)
-        {
-            restartAlarm = true;
-            DelayCount_02.SetActive(false);
-            DelayCount_01.SetActive(false);     
-            return true;
-        }
-        else if(alarmStart_time < 1 && displayTimer)
-        {
-            DelayCount_02.SetActive(false);
-            DelayCount_01.SetActive(true);
-            return false;
-        }
-        else if (displayTimer)
-        {
-            DelayCount_02.SetActive(true);
-            DelayCount_01.SetActive(false);
-            return false;
-        }
-        else
-        {
-            return false;
-        }
-    }        
-*/
     void Detect_StartFishing()
     { 
-        if ((input_MouseButtonDown_0 || input_MouseButtonHeld_0) 
+        if ((PlayerInput.ButtonDown() || PlayerInput.ButtonHeld()) 
         && currentGameState == GameState.Idle && AlarmDelayCount.AlarmSetting(0.5f, false))
         {
             isCasting = false;
             currentGameState = GameState.CastingLine;
         }
 
-        if(input_MouseButtonHeld_0 && currentGameState == GameState.CastingLine)
+        if(PlayerInput.ButtonHeld() && currentGameState == GameState.CastingLine)
         {
             Slider_castLine.value += (playerCastForce * Time.deltaTime);
             isCasting = true;
         } 
         
-        if (isCasting && !input_MouseButtonHeld_0)
+        if (isCasting && !PlayerInput.ButtonHeld())
         {
             isCasting = false;
             currentGameState = GameState.BeforeFishing;
@@ -269,7 +204,7 @@ public class GameManager : MonoBehaviour
 
     void Detect_RestartGame()
     {
-        if (canRestart && input_MouseButtonDown_0)
+        if (canRestart && PlayerInput.ButtonDown())
         {  
             currentGameState = GameState.Idle; 
             canRestart = false;
@@ -320,7 +255,7 @@ public class GameManager : MonoBehaviour
 
     void PlayerFishingInput() // Maybe can be its own class?
     {
-        if(input_MouseButtonHeld_0)
+        if(PlayerInput.ButtonHeld())
         {
             Slider_playerInput.value -= (playerMoveSpeed * Time.deltaTime);
         }

@@ -8,7 +8,7 @@ public class TestCommands : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Return))
         {
-            RandomItem_Generator.PickRandomItem();
+            RandomItem_Generator.PickRandomItem(1);
         }        
     }
 }

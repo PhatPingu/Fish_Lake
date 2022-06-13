@@ -143,6 +143,7 @@ public class GameManager : MonoBehaviour
             define_NewCircleLocation = true;
             ShowFishingActionUI(false);
             WinningUI.SetActive(true);
+            RandomItem_Generator.PickRandomItem(1);
             if(AlarmDelayCount.AlarmSetting(0.5f, false))
             {
                 canRestart = true;
@@ -192,7 +193,6 @@ public class GameManager : MonoBehaviour
         if(isWin)
         {
             currentGameState = GameState.Game_Won;
-            RandomItem_Generator.PickRandomItem();
             // Display Reward
         }
         else if (isLoss)

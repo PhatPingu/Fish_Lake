@@ -2,15 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class RandomItem_Generator
+public static class Reward_Generator
 {
-    
+    public static int possibleRewardQuantity;
 
     public static void PickRandomItem(int quantity)
     {
         if(quantity > 0) 
         {
-            quantity -= 1;
+            possibleRewardQuantity -= 1;
 
             int itemIDPicked = Random.Range(0, Catalogue_nftPool.localID_nftList.Count);
             

@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
 
     public enum GameState
     {
-        Idle,
+        ResetGame,
         CastingLine,
         BeforeFishing,
         Fishing,
@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        currentGameState = GameState.Idle;
+        currentGameState = GameState.ResetGame;
         sliderWidth = Slider_playerInput.GetComponent<RectTransform>().sizeDelta.x;
         current_yellowArea = default_yellowArea;
         current_greenArea = default_greenArea;
@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
 
     void Update_GameState()
     {
-        if (currentGameState == GameState.Idle)
+        if (currentGameState == GameState.ResetGame)
         {
             ChooseFishCircleLocation();
             Slider_playerInput.value = Slider_playerInput.maxValue * 0.5f;
@@ -115,6 +115,7 @@ public class GameManager : MonoBehaviour
             ShowFishingActionUI(false);
             WinningUI.SetActive(false);
             LoosingUI.SetActive(false);
+            Reward_Generator.possibleRewardQuantity = 1;
         }
         
         if (currentGameState == GameState.CastingLine)
@@ -143,7 +144,7 @@ public class GameManager : MonoBehaviour
             define_NewCircleLocation = true;
             ShowFishingActionUI(false);
             WinningUI.SetActive(true);
-            RandomItem_Generator.PickRandomItem(1);
+            Reward_Generator.PickRandomItem(Reward_Generator.possibleRewardQuantity);
             if(AlarmDelayCount.AlarmSetting(0.5f, false))
             {
                 canRestart = true;
@@ -165,7 +166,7 @@ public class GameManager : MonoBehaviour
     void Detect_StartFishing()
     { 
         if ((PlayerInput.ButtonDown() || PlayerInput.ButtonHeld()) 
-        && currentGameState == GameState.Idle && AlarmDelayCount.AlarmSetting(0.5f, false))
+        && currentGameState == GameState.ResetGame && AlarmDelayCount.AlarmSetting(0.5f, false))
         {
             isCasting = false;
             currentGameState = GameState.CastingLine;
@@ -201,11 +202,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    
+
     void Detect_RestartGame()
     {
         if (canRestart && PlayerInput.ButtonDown())
         {  
-            currentGameState = GameState.Idle; 
+            currentGameState = GameState.ResetGame; 
             canRestart = false;
         }
     }

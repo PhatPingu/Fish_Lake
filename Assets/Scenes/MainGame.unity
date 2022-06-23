@@ -3591,7 +3591,7 @@ MonoBehaviour:
   fishReelSpeed: 7
   fishReelSlowSpeed: 1
   default_yellowArea: 70
-  default_greenArea: 50
+  default_greenArea: 30
   current_yellowArea: 0
   current_greenArea: 0
   fishCircleLocation: 0
